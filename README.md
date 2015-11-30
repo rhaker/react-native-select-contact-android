@@ -4,7 +4,7 @@ This is a react native module that launches the addressbook and when the user ta
 
 For ios, you can use one of the many select-contact-* modules I have previously built.  
 
-## Usage Example
+## Installation
 
 ```js
 npm install react-native-select-contact-android --save
