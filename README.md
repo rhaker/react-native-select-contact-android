@@ -7,6 +7,12 @@ For ios, you can use one of the many select-contact-* modules I have previously 
 ## Usage Example
 
 ```js
+npm install react-native-select-contact-android --save
+```
+
+## Usage Example
+
+```js
 var SelectContacts = require('react-native-select-contact-android')
 
 SelectContacts.pickContact((err, contacts) => {
