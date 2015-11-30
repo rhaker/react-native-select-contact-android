@@ -1,6 +1,6 @@
 {
   "name": "react-native-select-contact-android",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A react-native module for tapping on a contact and returning an name, email, and phone.",
   "main": "index.js",
   "scripts": {

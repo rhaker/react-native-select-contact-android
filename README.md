@@ -12,7 +12,7 @@ var SelectContacts = require('react-native-select-contact-android')
 SelectContacts.pickContact((err, contacts) => {
 
   if (err){
-    console("there was an error. possibly permissions denied.")
+    console.log("there was an error. possibly permissions denied.")
   } else if (contacts == "timed out") {
     console.log("timed out");
   } else if (contacts == "android version not supported") {
@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
       .setBundleAssetName("index.android.bundle")
       .setJSMainModuleName("index.android")
       .addPackage(new MainReactPackage())
-      .addPackage(mReactNativeContacts)                    // <------ add package
+      .addPackage(mReactNativeSelectContacts)                    // <------ add package
       .setUseDeveloperSupport(BuildConfig.DEBUG)
       .setInitialLifecycleState(LifecycleState.RESUMED)
       .build();
@@ -106,4 +106,4 @@ The following will cause a callback that indicates an error (use the console.log
 ## Acknowledgements and Special Notes
 
 The approach taken in this module relies heavily on @satya164 comments at https://github.com/facebook/react-native/issues/3334. If you are using a module that also uses his approach, you might have to make some adjustments. Special thanks also to @rt2zz and his react-native-contacts repo. Finally,
-Brent Vatne is always amazingly helpful with everything and deserves to be thanked. 
+Brent Vatne is always amazingly helpful with everything and deserves to be thanked.
