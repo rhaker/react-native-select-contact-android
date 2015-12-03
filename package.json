@@ -1,7 +1,7 @@
 {
   "name": "react-native-select-contact-android",
-  "version": "0.1.1",
-  "description": "A react-native module for tapping on a contact and returning an name, email, and phone.",
+  "version": "0.2.1",
+  "description": "A react-native module for tapping on a contact and returning a name, email, and phone.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
