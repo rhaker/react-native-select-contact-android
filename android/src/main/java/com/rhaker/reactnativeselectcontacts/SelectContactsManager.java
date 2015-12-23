@@ -111,8 +111,8 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
     map = null;
     counter = null;
 
-    // check if android version < 4.0
-    if ((android.os.Build.VERSION.RELEASE.startsWith("1.")) || (android.os.Build.VERSION.RELEASE.startsWith("2.")) || (android.os.Build.VERSION.RELEASE.startsWith("3."))) {
+    // check if android version < 5.0
+    if ((android.os.Build.VERSION.RELEASE.startsWith("1.")) || (android.os.Build.VERSION.RELEASE.startsWith("2.")) || (android.os.Build.VERSION.RELEASE.startsWith("3.")) || (android.os.Build.VERSION.RELEASE.startsWith("4."))) {
 
       callbackFinal.invoke(null,"android version not supported");
 

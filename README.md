@@ -1,6 +1,6 @@
 ## react-native-select-contact-android
 
-This is a react native module that launches the addressbook and when the user taps on a contact various fields (name, phone, and email) are returned. This is for android only.
+This is a react native module that launches the addressbook and when the user taps on a contact various fields (name, phone, and email) are returned. This is for android version 5 (or higher) only.
 
 For ios, you can use one of the many select-contact-* modules I have previously built.  
 
@@ -103,7 +103,7 @@ The phone and email will be returned as undefined (if they don't exist), so you 
 
 The following will cause a callback that indicates an error (use the console.log to see the specific message):
 
-1) Android Version below 4.0 is used.
+1) Android Version below 5.0 is used.
 
 2) User denies access to the addressbook
 
