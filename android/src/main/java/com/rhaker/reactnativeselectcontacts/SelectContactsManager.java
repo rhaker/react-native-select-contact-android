@@ -89,7 +89,12 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
               // set the flag to indicate selection made (polling stops)
               foundFlag = 1;
 
-           } // end if activity result ok
+            } else if (resultCode == mActivity.RESULT_CANCELED) {
+
+              // set the flag to indicate user hit back button in address book (polling stops)
+              foundFlag = 2;
+
+            }
 
          break;
 
@@ -134,6 +139,16 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
               // cancel countdown, send result
               counter.cancel();
               callbackFinal.invoke(null,map);
+            }
+
+            // cancel polling if user hits back button
+            if (foundFlag == 2) {
+
+              // cancel countdown, send result
+              counter.cancel();
+              // send user canceled
+              callbackFinal.invoke(null,"user canceled");
+
             }
 
           }

@@ -19,6 +19,8 @@ SelectContacts.pickContact((err, contacts) => {
 
   if (err){
     console.log("there was an error. possibly permissions denied.")
+  } else if (contacts == "user canceled") {
+    console.log("user hit back button in contact picker");
   } else if (contacts == "timed out") {
     console.log("timed out");
   } else if (contacts == "android version not supported") {
@@ -52,6 +54,10 @@ dependencies {
 
 * register module (in android/app/src/main/java/[your-app-namespace]/MainActivity.java)
 ```java
+//make sure you have imported the three packages below (ContentResolver, Context, and Intent)
+//import android.content.ContentResolver;
+//import android.content.Context;
+//import android.content.Intent;
 import com.rhaker.reactnativeselectcontacts.ReactNativeSelectContacts; // <------ add import
 
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
@@ -108,6 +114,8 @@ The following will cause a callback that indicates an error (use the console.log
 2) User denies access to the addressbook
 
 3) The user takes longer than 45 seconds to pick a contact.
+
+4) User hits the back button and never picks a contact.
 
 ## Acknowledgements and Special Notes
 
