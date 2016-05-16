@@ -26,7 +26,7 @@ import java.util.Map;
 public class SelectContactsManager extends ReactContextBaseJavaModule {
 
   // initialize variables
-  static final int PICK_CONTACT = 1;
+  static final int PICK_CONTACT = 109888123;
   private Activity mActivity = null;
   static int foundFlag = 0;
   static int interval = 0;
