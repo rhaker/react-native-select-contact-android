@@ -10,20 +10,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.Map;
 
-public class SelectContactsManager extends ReactContextBaseJavaModule {
+public class SelectContactsManager extends ReactContextBaseJavaModule implements ActivityEventListener  {
 
   // initialize variables
   static final int PICK_CONTACT = 1;
@@ -34,9 +37,22 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
   static CountDownTimer counter;
 
   // set the activity - pulled in from Main
-  public SelectContactsManager(ReactApplicationContext reactContext, Activity activity) {
+  public SelectContactsManager(ReactApplicationContext reactContext) {
     super(reactContext);
-    mActivity = activity;
+    // Add the listener for `onActivityResult`
+    reactContext.addActivityEventListener(this);
+  }
+
+  public void onNewIntent(Intent intent) {
+
+  }
+
+  public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    this.handleActivityResult(requestCode, resultCode, intent);
+  }
+
+  public void onActivityResult(Activity activity, final int requestCode, final int resultCode, final Intent intent) {
+    this.handleActivityResult(requestCode, resultCode, intent);
   }
 
   // handle the user selection of a certain contact
@@ -105,7 +121,8 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
 
 
   @ReactMethod
-  public void pickContact(Callback callback) {
+  public void pickContact(ReadableMap options, Callback callback) {
+    mActivity = getCurrentActivity();
 
     // initialize variable
     final Callback callbackFinal = callback;
@@ -115,6 +132,12 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
     foundFlag = 0;
     map = null;
     counter = null;
+    int timeout = 45000;
+
+    if(options != null &&  options.getInt("timeout") > 0){
+        timeout = options.getInt("timeout");
+        Log.i("RNSelectContacts", "custom timeout set: " + timeout + " ms");
+    }
 
     // check if android version < 5.0
     if ((android.os.Build.VERSION.RELEASE.startsWith("1.")) || (android.os.Build.VERSION.RELEASE.startsWith("2.")) || (android.os.Build.VERSION.RELEASE.startsWith("3.")) || (android.os.Build.VERSION.RELEASE.startsWith("4."))) {
@@ -128,7 +151,7 @@ public class SelectContactsManager extends ReactContextBaseJavaModule {
       mActivity.startActivityForResult(pickContactIntent, PICK_CONTACT);
 
       // poll for user input selection - max of 45 seconds
-      counter = new CountDownTimer(45000, 1000) {
+      counter = new CountDownTimer(timeout, 1000) {
 
           @Override
           public void onTick(long millisUntilFinished) {

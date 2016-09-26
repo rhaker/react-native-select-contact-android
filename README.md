@@ -15,7 +15,7 @@ npm install react-native-select-contact-android --save
 ```js
 var SelectContacts = require('react-native-select-contact-android')
 
-SelectContacts.pickContact((err, contacts) => {
+SelectContacts.pickContact({timeout: 45000}, (err, contacts) => {
 
   if (err){
     console.log("there was an error. possibly permissions denied.")
@@ -35,8 +35,15 @@ SelectContacts.pickContact((err, contacts) => {
 })
 ```
 
+### Options
+
+| Property  | Description  |
+|---|---|
+|  **timeout** (number)  |  Value in milliseconds (ms) that states how long to wait for the user to select a contact <br/> Default: `45000` |  
+
+
 ## Getting Started - Android
-* In `android/setting.gradle`
+* In `android/settings.gradle`
 ```gradle
 ...
 include ':react-native-select-contact-android'
@@ -52,46 +59,25 @@ dependencies {
 }
 ```
 
-* register module (in android/app/src/main/java/[your-app-namespace]/MainActivity.java)
+* register module (in android/app/src/main/java/[your-app-namespace]/MainApplication.java)
 ```java
-//make sure you have imported the three packages below (ContentResolver, Context, and Intent)
-//import android.content.ContentResolver;
-//import android.content.Context;
-//import android.content.Intent;
 import com.rhaker.reactnativeselectcontacts.ReactNativeSelectContacts; // <------ add import
 
-public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
-  ......
+public class MainApplication extends Application implements ReactApplication {
+  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
 
-  private ReactRootView mReactRootView;
-  private ReactNativeSelectContacts mReactNativeSelectContacts;  // <------ add package
-  ......
+    ...
 
-  mReactNativeSelectContacts = new ReactNativeSelectContacts(this);  // <------ add package
-  mReactRootView = new ReactRootView(this);
-
-    mReactInstanceManager = ReactInstanceManager.builder()
-      .setApplication(getApplication())
-      .setBundleAssetName("index.android.bundle")
-      .setJSMainModuleName("index.android")
-      .addPackage(new MainReactPackage())
-      .addPackage(mReactNativeSelectContacts)                    // <------ add package
-      .setUseDeveloperSupport(BuildConfig.DEBUG)
-      .setInitialLifecycleState(LifecycleState.RESUMED)
-      .build();
-  ......
-
-      mReactInstanceManager.onResume(this);
-      }
-    }
-
-    // add the entire onActivityResult method below the onResume code
-    // Note: if you already have this function, just add the mReactNativeSelectContacts part)
     @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      mReactNativeSelectContacts.handleActivityResult(requestCode, resultCode, data);
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+          new MainReactPackage(),
+          new ReactNativeSelectContacts()
+      );
     }
+  };
+
+  ...
 }
 ```
 

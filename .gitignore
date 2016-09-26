@@ -5,3 +5,6 @@
 local.properties
 *.iml
 build
+.idea
+.DS_Store
+node_modules

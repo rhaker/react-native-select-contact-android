@@ -18,13 +18,9 @@ public class ReactNativeSelectContacts implements ReactPackage {
   private Activity mActivity = null;
   private SelectContactsManager mModuleInstance;
 
-  public ReactNativeSelectContacts(Activity activity) {
-        mActivity = activity;
-  }
-
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    mModuleInstance = new SelectContactsManager(reactContext,mActivity);
+    mModuleInstance = new SelectContactsManager(reactContext);
     return Arrays.<NativeModule>asList(mModuleInstance);
   }
 
