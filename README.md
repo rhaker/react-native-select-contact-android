@@ -18,13 +18,17 @@ var SelectContacts = require('react-native-select-contact-android')
 SelectContacts.pickContact({timeout: 45000}, (err, contacts) => {
 
   if (err){
-    console.log("there was an error. possibly permissions denied.")
-  } else if (contacts == "user canceled") {
-    console.log("user hit back button in contact picker");
-  } else if (contacts == "timed out") {
-    console.log("timed out");
-  } else if (contacts == "android version not supported") {
-    console.log("invalid android version");
+    if(typeof err === 'object'){
+      if (err.message == "user canceled") {
+        console.log("user hit back button in contact picker");
+      } else if (err.message == "timed out") {
+        console.log("timed out");
+      } else if (err.message == "android version not supported") {
+        console.log("invalid android version");
+      }
+    }
+    // log out err object
+    console.log(err)
   } else {
     console.log(contacts)
     console.log(contacts.name);
