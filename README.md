@@ -109,5 +109,7 @@ The following will cause a callback that indicates an error (use the console.log
 
 ## Acknowledgements and Special Notes
 
-The approach taken in this module relies heavily on @satya164 comments at https://github.com/facebook/react-native/issues/3334. If you are using a module that also uses his approach, you might have to make some adjustments. Special thanks also to @rt2zz and his react-native-contacts repo. Finally,
+This module has been updated by @lwhiteley to handle RN version 0.29+. Special thanks for all the hard work!
+
+The approach prior to @lwhiteley's version relied heavily on @satya164 comments at https://github.com/facebook/react-native/issues/3334. If you are using a module that also uses his approach, you might have to make some adjustments. Special thanks also to @rt2zz and his react-native-contacts repo. Finally,
 Brent Vatne is always amazingly helpful with everything and deserves to be thanked.
