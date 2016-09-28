@@ -50,6 +50,7 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
   public boolean handleActivityResult(final int requestCode, final int resultCode, final Intent data) {
       // check if pickContact was invoked else opt out of activity
       if(mActivity == null){
+          Log.i("RNSelectContacts", "mActivity is null, may not be the current intent or there is a problem");
           return false;
       }
       switch (requestCode) {
