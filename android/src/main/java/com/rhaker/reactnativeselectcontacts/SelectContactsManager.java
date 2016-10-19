@@ -1,6 +1,7 @@
 package com.rhaker.reactnativeselectcontacts;
 
 import android.app.Activity;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 public class SelectContactsManager extends ReactContextBaseJavaModule implements ActivityEventListener  {
@@ -50,9 +52,9 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
   public boolean handleActivityResult(final int requestCode, final int resultCode, final Intent data) {
       // check if pickContact was invoked else opt out of activity
       if(mActivity == null){
-          Log.i("RNSelectContacts", "mActivity is null, may not be the current intent or there is a problem");
           return false;
       }
+
       switch (requestCode) {
 
           case (PICK_CONTACT) :
@@ -66,34 +68,18 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
                if (c.moveToFirst()) {
 
                    map = Arguments.createMap();
-                   String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                   String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                   String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                   String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
                     if (hasPhone.equalsIgnoreCase("1")) {
-
-                      Cursor phones = mActivity.getContentResolver().query(
-                                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
-                                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,
-                                 null, null);
-                      phones.moveToFirst();
-                      String cNumber = phones.getString(phones.getColumnIndex("data1"));
-                      map.putString("phone", cNumber);
+                      map.putArray("phoneNumbers", getPhones(mActivity, id));
                     }
 
-                    Cursor emailCur = mActivity.getContentResolver().query(
-                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
-                            ContactsContract.CommonDataKinds.Email.CONTACT_ID
-                                    + " = ?", new String[] { id }, null);
-
-                    String email = null;
-
-                    if ((emailCur != null) && (emailCur.moveToNext())) {
-                      email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                      map.putString("email", email);
-                    }
+                    map.putArray("emailAddresses", getEmails(mActivity, id));
 
                     String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     map.putString("name", name);
+                    map.putString("id", id);
 
               }
 
@@ -119,7 +105,6 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
   public void pickContact(ReadableMap options, Callback callback) {
     mActivity = getCurrentActivity();
 
-
     // initialize variable
     final Callback callbackFinal = callback;
 
@@ -141,7 +126,7 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
             (android.os.Build.VERSION.RELEASE.startsWith("3.")) ||
             (android.os.Build.VERSION.RELEASE.startsWith("4."))) {
 
-      callbackFinal.invoke(generateCustomError("Android version not supported"), null);
+      callbackFinal.invoke(generateCustomError("android version not supported"), null);
 
     } else {
 
@@ -154,10 +139,8 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
 
           @Override
           public void onTick(long millisUntilFinished) {
-
             // cancel polling if user picks
             if (foundFlag == 1) {
-
               // cancel countdown, send result
               counter.cancel();
               callbackFinal.invoke(null,map);
@@ -165,7 +148,6 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
 
             // cancel polling if user hits back button
             if (foundFlag == 2) {
-
               // cancel countdown, send result
               counter.cancel();
               // send user canceled
@@ -177,10 +159,8 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
 
           @Override
           public void onFinish() {
-
             // poll for 45 cycles - or 45 seconds max
             if (foundFlag == 0) {
-
               // send timed out result
               callbackFinal.invoke(generateCustomError("timed out"), null);
 
@@ -195,7 +175,7 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
   }
   private WritableMap getErrorMeta(){
       WritableMap meta = Arguments.createMap();
-      meta.putString("androidVersion", android.os.Build.VERSION.RELEASE);
+      meta.putString("androidVersion", Build.VERSION.RELEASE);
       return meta;
   }
 
@@ -211,6 +191,46 @@ public class SelectContactsManager extends ReactContextBaseJavaModule implements
     error.putString("message", ex.getMessage());
     return error;
   }
+
+  private WritableArray getPhones(Activity mActivity, String id){
+      WritableArray array = Arguments.createArray();
+
+      Cursor cursor = mActivity.getContentResolver().query(
+              ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+              ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,
+              null, null);
+      while (cursor != null && cursor.moveToNext()) {
+          String cNumber = cursor.getString(cursor.getColumnIndex("data1"));
+          if(!cNumber.isEmpty()){
+              WritableMap map = Arguments.createMap();
+              map.putString("number", cNumber);
+              array.pushMap(map);
+          }
+      }
+
+      return array;
+  }
+
+  private WritableArray getEmails(Activity mActivity, String id){
+      WritableArray array = Arguments.createArray();
+
+      Cursor cursor = mActivity.getContentResolver().query(
+              ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
+              ContactsContract.CommonDataKinds.Email.CONTACT_ID
+                      + " = ?", new String[] { id }, null);
+
+      while (cursor != null && cursor.moveToNext()) {
+          String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+          if(!email.isEmpty()){
+              WritableMap map = Arguments.createMap();
+              map.putString("email", email);
+              array.pushMap(map);
+          }
+      }
+
+      return array;
+  }
+
 
   @Override
   public String getName() {
