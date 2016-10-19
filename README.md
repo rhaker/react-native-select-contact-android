@@ -15,7 +15,7 @@ npm install react-native-select-contact-android --save
 ```js
 var SelectContacts = require('react-native-select-contact-android')
 
-SelectContacts.pickContact({timeout: 45000}, (err, contacts) => {
+SelectContacts.pickContact({timeout: 45000}, (err, contact) => {
 
   if (err){
     if(typeof err === 'object'){
@@ -29,11 +29,20 @@ SelectContacts.pickContact({timeout: 45000}, (err, contacts) => {
     }
     // log out err object
     console.log(err)
-  } else {
-    console.log(contacts)
-    console.log(contacts.name);
-    console.log(contacts.phone);
-    console.log(contacts.email);
+  } else {  
+    console.log(contact.name);
+    console.log(contact.phoneNumbers);
+    console.log(contact.emailAddresses);
+    console.log(contact)
+    /**
+    Sample contact:
+    {
+      id: "100",
+      name: "John Doe",
+      phoneNumbers: [ {"number": "+1-555-555-5555"} ],
+      emailAddresses: [ {"email": "john.doe@email.com"} ]
+    }
+    **/
   }
 
 })
@@ -93,7 +102,7 @@ public class MainApplication extends Application implements ReactApplication {
 ```
 ## Additional Notes
 
-The phone and email will be returned as undefined (if they don't exist), so you should check for the case where value is null, empty, or undefined.
+The properties phoneNumbers and emailAddresses will be returned as empty arrays if no phone numbers or emails are found.
 
 ## Error Callback
 
@@ -109,7 +118,7 @@ The following will cause a callback that indicates an error (use the console.log
 
 ## Acknowledgements and Special Notes
 
-This module has been updated by @lwhiteley to handle RN version 0.29+. Special thanks for all the hard work!
+This module has been updated by [@lwhiteley](https://github.com/lwhiteley) to handle RN version 0.29+. Special thanks for all the hard work!
 
 The approach prior to @lwhiteley's version relied heavily on @satya164 comments at https://github.com/facebook/react-native/issues/3334. If you are using a module that also uses his approach, you might have to make some adjustments. Special thanks also to @rt2zz and his react-native-contacts repo. Finally,
 Brent Vatne is always amazingly helpful with everything and deserves to be thanked.
