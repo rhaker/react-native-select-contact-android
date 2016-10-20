@@ -12,12 +12,16 @@ If you want to be able to select multiple contacts at once for android, please u
 npm install react-native-select-contact-android --save
 ```
 
-## Usage Example
+## Usage Example: Single Contact
 
 ```js
 var SelectContacts = require('react-native-select-contact-android')
 
-SelectContacts.pickContact({timeout: 45000}, (err, contact) => {
+SelectContacts.pickContact({
+  timeout: 45000, multiple: false,
+  theme: SelectContacts.Themes.LIGHT
+},
+(err, contact) => {
 
   if (err){
     if(typeof err === 'object'){
@@ -32,9 +36,6 @@ SelectContacts.pickContact({timeout: 45000}, (err, contact) => {
     // log out err object
     console.log(err)
   } else {  
-    console.log(contact.name);
-    console.log(contact.phoneNumbers);
-    console.log(contact.emailAddresses);
     console.log(contact)
     /**
     Sample contact:
@@ -50,12 +51,24 @@ SelectContacts.pickContact({timeout: 45000}, (err, contact) => {
 })
 ```
 
+## Usage Example: Single Contact
+
 ### Options
 
 | Property  | Description  |
 |---|---|
-|  **timeout** (number)  |  Value in milliseconds (ms) that states how long to wait for the user to select a contact <br/> Default: `45000` |  
+|  **timeout** (number)  |  Value in milliseconds (ms) that states how long to wait for the user to select a contact <br/> Default: `45000` |
+|  **multiple** (boolean)  |  When true, will enable the multi-select view <br/> Default: `false` |  
+|  **theme** (int)  |  This option sets the theme for  [Android-ContactPicker](https://github.com/1gravity/Android-ContactPicker) multi-select view only <br/> Default: `SelectContacts.Themes.LIGHT` |  
 
+### Constants
+
+```
+SelectContacts.Themes = {
+  DARK,
+  LIGHT
+}
+```
 
 ## Getting Started - Android
 * In `android/settings.gradle`
@@ -74,7 +87,7 @@ dependencies {
 }
 ```
 
-* register module (in android/app/src/main/java/[your-app-namespace]/MainApplication.java)
+* register module (in android/app/src/main/java/{your-app-namespace}/MainApplication.java)
 ```java
 import com.rhaker.reactnativeselectcontacts.ReactNativeSelectContacts; // <------ add import
 
@@ -96,17 +109,41 @@ public class MainApplication extends Application implements ReactApplication {
 }
 ```
 
-* add Contacts permission (in android/app/src/main/AndroidManifest.xml)
+* Add Contacts permission and Activity (in android/app/src/main/AndroidManifest.xml)
 ```xml
 ...
   <uses-permission android:name="android.permission.READ_CONTACTS" />
 ...
+
+<application
+     android:name=".MainApplication"
+     android:allowBackup="true"
+     android:label="@string/app_name"
+     android:icon="@mipmap/ic_launcher"
+     android:theme="@style/AppTheme">
+
+     ...
+
+        <activity
+            android:name="com.onegravity.contactpicker.core.ContactPickerActivity"
+            android:enabled="true"
+            android:exported="false" >
+
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+      ...
+</application>
 ```
 ## Additional Notes
 
-The properties phoneNumbers and emailAddresses will be returned as empty arrays if no phone numbers or emails are found.
+- The properties phoneNumbers and emailAddresses will be returned as empty arrays if no phone numbers or emails are found.
+- The multi-select view was implemented using [Android-ContactPicker](https://github.com/1gravity/Android-ContactPicker). Please see its documentation to be more informed about it, if necessary.
 
-## Error Callback
+### Error Callback
 
 The following will cause a callback that indicates an error (use the console.log to see the specific message):
 
@@ -117,6 +154,10 @@ The following will cause a callback that indicates an error (use the console.log
 3) The user takes longer than 45 seconds to pick a contact.
 
 4) User hits the back button and never picks a contact.
+
+### Known issues
+
+- If you select too many contacts, there will be an exception that crashes the app. [details](https://www.neotechsoftware.com/blog/android-intent-size-limit). Possible solution would be to find a way to limit the selected contacts
 
 ## Acknowledgements and Special Notes
 
