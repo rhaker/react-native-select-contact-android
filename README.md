@@ -4,6 +4,8 @@ This is a react native module that launches the addressbook and when the user ta
 
 For ios, you can use one of the many select-contact-* modules I have previously built.  
 
+If you want to be able to select multiple contacts at once for android, please use https://github.com/lwhiteley/react-native-android-contactpicker by @lwhiteley
+
 ## Installation
 
 ```js
