@@ -22,7 +22,7 @@ import com.facebook.react.bridge.WritableMap;
 public class SelectContactsManager extends ReactContextBaseJavaModule implements ActivityEventListener  {
 
   // initialize variables
-  static final int PICK_CONTACT = 1;
+  static final int PICK_CONTACT = 109888123;
   private Activity mActivity = null;
   static int foundFlag = 0;
   static int interval = 0;
