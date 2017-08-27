@@ -24,7 +24,6 @@ public class ReactNativeSelectContacts implements ReactPackage {
     return Arrays.<NativeModule>asList(mModuleInstance);
   }
 
-  @Override
   public List<Class<? extends JavaScriptModule>> createJSModules() {
     return Collections.emptyList();
   }
